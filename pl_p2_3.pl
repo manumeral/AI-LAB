@@ -1,0 +1,316 @@
+add_int(X,0,X).
+add_int(X,Y,Z):-Y>0,!,X1 is X+1,Y1 is Y-1,add_int(X1,Y1,Z).
+add_int(X,Y,Z):-Y<0,X1 is X-1,Y1 is Y+1,add_int(X1,Y1,Z).
+
+sub_int(X,0,X).
+sub_int(X,Y,Z):-Y>0,!,X1 is X-1,Y1 is Y-1,sub_int(X1,Y1,Z).
+sub_int(X,Y,Z):-Y<0,X1 is X+1,Y1 is Y+1,sub_int(X1,Y1,Z).
+
+mult_int(X,0,Z):-Z is 0.
+mult_int(X,Y,Z):-Y>0,!,Y1 is Y-1,mult_int(X,Y1,Z1),Z is Z1+X.
+mult_int(X,Y,Z):-Y<0,Y1 is Y+1,mult_int(X,Y1,Z1),Z is Z1-X.
+
+div_int(0,_,Z):-Z is 0.
+div_int(X,Y,0):-X>0,!,X<Y.
+div_int(X,Y,0):-X<0,X>Y.
+div_int(X,Y,Z):-X*Y>0,!,X1 is X-Y,div_int(X1,Y,Z1),Z is Z1+1.
+div_int(X,Y,Z):-X*Y<0,X1 is X+Y,div_int(X1,Y,Z1),Z is Z1-1.
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+split_list([X|Rest],A,B):-X>0,!,split_list(Rest,[X|A],B).
+split_list([X|Rest],A,B):-X<0,split_list(Rest,A,[X|B]).
+
+count([],Z):-Z is 0.
+count([X|Rest],Z):-X>100,!,count(Rest,Z1),Z is Z1+1.
+count([X|Rest],Z):-X=<100,count(Rest,Z).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+rep_first_element(_,[],[]).
+rep_first_element(Y,[X|Rest],[Y|Rest]).
+
+rep_first(X,Y,[],[]).
+rep_first(X,Y,[X|T],[Y|T]).
+rep_first(X,Y,[H|T],[H|T1]):-rep_first(X,Y,T,T1).
+
+replace([H|T], 1, X, [X|T]).
+replace([H|T], I, X, [H|R]):- I > 1, NI is I-1, replace(T, NI, X, R), !.
+replace(L, _, _, L).
+
+checkpal([]).
+checkpal(L):-reverse_list(L,L).
+
+
+delete_nth([],_,[]).
+delete_nth([H|T],1,T).
+delete_nth([H|T],N,[H|L1]):-N>1,N1 is N-1,delete_nth(T,N1,L1).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+cutlast([],[]).
+cutlast([X],[]).
+cutlast([X|Rest],[X|Rest1]):-cutlast(Rest,Rest1).
+
+trim(_,[],[]).
+trim(1,[X|Rest],Rest).
+trim(N,[X|Rest],L):-N1 is N-1,trim(N1,Rest,L).
+
+trimlast(N,L,L1):-N>0,N1 is N-1,cutlast(L,L2),trimlast(N1,L2,L1),!.
+trimlast(_,L,L).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+double([],[]).
+double([X],L):-append(X,[X],L).
+double([H|T],[H|[H|T1]]):-double(T,T1).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+fact(0,Z):-Z is 1.
+fact(1,Z):-Z is 1.
+fact(N,Z):-N1 is N-1,fact(N1,Z1),Z is Z1*N.
+
+fact1(N,F):-fact_acc(N,1,F).
+fact_acc(0,A,A).
+fact_acc(1,A,A).
+fact_acc(N,A,F):-A1 is A*N,N1 is N-1,fact_acc(N1,A1,F).
+
+reverse1(L,L1):-reverse_acc(L,[],L1).
+reverse_acc([],A,A).
+reverse_acc([H|T],A,L1):-reverse_acc(T,[H|A],L1).
+
+remove([],[]).
+remove([H|T],[H|L]):-not(our_member(H,T)),!,remove(T,L).
+remove([H|T],L):-remove(T,L).
+
+rmv_dup(L,L1):-rmv(L,[],L1).
+rmv([],A,A).
+rmv([H|T],A,L1):-our_member(H,A),!,rmv(T,A,L1).
+rmv([H|T],A,L1):-rmv(T,[H|A],L1).
+
+sort_quick(L,M):-quicksort(L,[],M).
+quicksort([],A,A).
+quicksort([H|T],R,M):-partition(T,Lt,H,Gt),quicksort(Gt,R,Gt_sorted),quicksort(Lt,[H|Gt_sorted],M).
+partition([],[],_,[]).
+partition([H|T],[H|T1],X,Gt):-H=<X,!,partition(T,T1,X,Gt).
+partition([H|T],Lt,X,[H|T2]):-H>X,partition(T,Lt,X,T2).
+
+quick_sort([X|Xs],Ys) :-
+  partition(Xs,Left,X,Right),
+  quick_sort(Left,Ls),
+  quick_sort(Right,Rs),
+  append(Ls,[X|Rs],Ys).
+quick_sort([],[]).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+bubblesort(InputList,SortList) :-
+        swap(InputList,List) , ! ,bubblesort(List,SortList).
+bubblesort(SortList,SortList).
+    
+swap([X,Y|List],[Y,X|List]) :- X > Y.
+swap([Z|List],[Z|List1]) :- swap(List,List1).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+flat_list([],[]).
+flat_list([H|T],L):-!,flat_list(H,L1),flat_list(T,L2),append(L1,L2,L).
+flat_list(H,[H]).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+mean(L,X):-sumlist(L,Sum),length2(L,Length),X is Sum/Length.
+
+mean1([],0).
+mean1(L,X):-meanacc(L,0,0,X).
+meanacc([],N,S,X):- X is S/N.
+meanacc([H|T],N,S,X):- N1 is N+1, S1 is S+H, meanacc(T,N1,S1,X).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+alternate(L1,[],L1).
+alternate([],L2,L2).
+alternate([X|T1],[Y|T2],[X|[Y|T]]):-alternate(T1,T2,T).
+
+transpose([],[],[]).
+transpose([X|T1],[Y|T2],[[X,Y]|T]):-transpose(T1,T2,T).
+
+inner_product([],[],0).
+inner_product([X|T1],[Y|T2],Z):-inner_product(T1,T2,T),Z is T+(X*Y).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+cola(0):-write('No bottle of coke on the wall.'),!.
+cola(1):-!,write('1 bottle of coke on the wall'), nl, write('1 bottle of coke'), nl, write('You take one down and pass it around'), nl, cola(0).
+cola(N):-write(N), write(' bottles of coke on the wall'), nl, write(N), write(' bottles of coke'), nl, write('You take one down and pass it around'), nl, N1 is N-1, cola(N1).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+dbA(['anun ','barun ','karun ']).
+dbB(['kura ','tama ','misa ']).
+dbC(['su ','kuru ','xanadu ']).
+dbD(['unuri ','biuri ','siuri ']).
+dbE(['bimo ','co ','lo ']).
+dbF(['sonen ','ariten ','smitten ']).
+dbG(['sicom ','ricom ','jicom ']).
+dbH(['kana ','nafa ','rala ']).
+dbI(['te ','shime ','gunime ']).
+verse(0).
+verse(A):-dbA(L1),pick(L1,E1),write(E1), dbB(L2),pick(L2,E2),write(E2), pick(L2,E3),write(E3), dbC(L3),pick(L3,E4),write(E4),nl,
+	dbD(L4),pick(L4,E5),write(E5), dbE(L5),pick(L5,E6),write(E6), pick(L5,E7),write(E7), pick(L3,E8),write(E8),nl,
+	dbF(L6),pick(L6,E9),write(E9), pick(L6,E10),write(E10), pick(L3,E11),write(E11),nl,
+	dbH(L8),pick(L8,E12),write(E12), dbI(L9),pick(L9,E13),write(E13), pick(L9,E14),write(E14), pick(L3,E15),write(E15),nl,nl,A1 is A-1,verse(A1).
+pick([], []).
+pick(List, Elt) :-
+        length2(List, Length),
+        random(0, Length, Index),
+        nth0(Index, List, Elt).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+move(1,X,Y,_):-write('move top disc from '),write(X),write(' to '),write(Y),nl.
+move(N,X,Y,Z):-N>1,M is N-1,move(M,X,Z,Y),move(1,X,Y,_),move(M,Z,Y,X).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+plus(0,X,X).
+plus(s(X),Y,s(Z)):- plus(X,Y,Z).
+
+minus(0,X,X).
+minus(X,0,X).
+minus(s(X), s(Y), Z):- minus(X,Y,Z).
+
+multsucc(0,Y,0).
+multsucc(s(0),Y,Y).
+multsucc(s(X),Y,Z1):- multsucc(X,Y,Z), plus(Y,Z,Z1).
+
+less_than(0,s(X)).
+less_than(s(X),s(Y)):-less_than(X,Y).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+ackerman(0,N,N1):-!,N1 is N+1.
+ackerman(M,0,X):-M1 is M-1,!, ackerman(M1,1,X).
+ackerman(M,N,X):-N1 is N-1, ackerman(M,N1,Y), M1 is M-1, ackerman(M1,Y,X).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+nexthigherpermutation(L, L1):- higherpermutation(L,L1), not(farhigherpermutation(L1,L)).
+higherpermutation(L,L1):-permutation(L,L1), higher(L1, L).
+higher([H1|T1],[H|T]):-H1>H,!.
+higher([H|T1],[H|T]):-higher(T1,T).
+farhigherpermutation(L1, L):- higherpermutation(L,L2), higher(L1,L2).
+
+nexthigherpermute(L,L1):- reverse(L,L2), get2array(L2, R, M), append(R, M, X), reverse(X, L1).
+get2array(L, R, M):- findpartition(L, L1, [H|L2]), justbigger(L1, H, X), substitute(X, L1, H, R1), reverse(R1, R), substitute(H, [H|L2], X, M).
+findpartition([X|[Y|R]],[X|L1], L2):- X<Y, !,findpartition([Y|R], L1, L2).
+findpartition([X|[Y|R]], [X], [Y|R]).
+justbigger([R|L], H, R):- R>H,!.
+justbigger([R|L], H, R1):- justbigger(L, H, R1).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+preorder(nil,[]).
+preorder(bt(Left,Root,Right),L):-preorder(Left,L1),preorder(Right,L2),append([Root|L1],L2,L).
+
+inorder(nil,[]).
+inorder(bt(Left,Root,Right),L):-inorder(Left,L1),inorder(Right,L2),append(L1,[Root|L2],L).
+
+postorder(nil,[]).
+postorder(bt(Left,Root,Right),L):-postorder(Left,L1),postorder(Right,L2),append(L1,L2,L3),append(L3,[Root],L).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+find([H|T],L,H):-our_member(H,L),!.
+find([H|T],L,N):-find(T,L,N).
+
+getpostorder(Pre,In,Post):-getpostorder1(Pre,In,[],Post).
+getpostorder1(Pre,[],A,A).
+getpostorder1(Pre,In,A,A1):-find(Pre,In,N),!,append(Left,[N|Right],In),getpostorder1(Pre,Right,A,R),getpostorder1(Pre,Left,A,L),append(L,R,L1),append(L1,[N],A1).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+getpreorder(Post,In,Pre):-reverse_list(Post,Po),getpreorder1(Po,In,[],Pre).
+getpreorder1(Po,[],A,A).
+getpreorder1(Po,In,A,A1):-find(Po,In,N),!,append(Left,[N|Right],In),getpreorder1(Po,Left,A,L),getpreorder1(Po,Right,A,R),append([N|L],R,A1).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+insert(nil,X,bst(nil,X,nil)).
+insert(bst(Left,Root,Right),X,bst(Left1,Root,Right)):-X=<Root,!,insert(Left,X,Left1).
+insert(bst(Left,Root,Right),X,bst(Left,Root,Right1)):-X>Root,insert(Right,X,Right1).
+
+min_in_tree(bst(nil,Root,_),Root).
+min_in_tree(bst(Left,Root,_),N):-min_in_tree(Left,N).
+
+delete_leaf(T,X,NT):-insert(NT,X,T).
+
+linearize(nil,[]).
+linearize(bst(Left,Root,Right),L):-linearize(Left,L1),linearize(Right,L2),append(L1,[Root|L2],L).
+
+tree_sort(Xs, Ys):-make_tree(Xs, nil, T), linearize(T, Ys).
+make_tree([], T, T).
+make_tree([X|Xs], T, U):-insert(T,X, V),make_tree(Xs, V, U).
+
+heapsort(L,L1):-make_tree(L,nil,T), sortt(T, [], L1).
+sortt(nil, L, L):-!.
+sortt(T, L, L1):- min_in_tree(T, H), deletemin(T, T1), append(L,[H],L2), sortt(T1, L2, L1).
+deletemin(bst(nil, Root, R), R):-!.
+deletemin(bst(L, Root, R), bst(L1, Root, R)):-deletemin(L,L1).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
+path(L,L1):-select1(H, L, R), pathfind(R, H, [H], L1).
+pathfind([],H,L, L):-!.
+pathfind(R, H, L, L1):- findnext(R,H,X), append(L, [X], L2), select1(X, R, M), pathfind(M, X, L2, L1).
+findnext([arc(X,Y)|R], arc(Z,X), arc(X,Y)).
+findnext([arc(W,Y)|R], arc(Z,X), L):- findnext(R, arc(Z,X), L).
+
+pathcycle(L,L1):-select1(H, L, R), pathfind(R, H, [H], L1), cycle(H,L1).
+cycle(arc(X,Y), [arc(Z,X)]):-!.
+cycle(arc(X,Y), [arc(Z,W)|R]):-cycle(arc(X,Y), R).
+
+% ==================================================================== %
+% ==================================================================== %
+% ==================================================================== %
+
